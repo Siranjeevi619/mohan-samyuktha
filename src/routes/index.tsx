@@ -5,7 +5,6 @@ import { Details } from "@/components/Details";
 import { Gallery } from "@/components/Gallery";
 import { ScratchCard } from "@/components/ScratchCard";
 import { Invitation } from "@/components/Invitation";
-import { RSVP } from "@/components/RSVP";
 import { Footer } from "@/components/Footer";
 import { Petals } from "@/components/Petals";
 
@@ -38,7 +37,6 @@ function Index() {
       <Gallery />
       <ScratchCard />
       <Invitation />
-      <RSVP />
       <Footer />
     </main>
   );
