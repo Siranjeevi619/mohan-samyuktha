@@ -1,80 +1,164 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useRef } from "react";
 import motif from "@/assets/elephant-motif.png";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 40 },
+  show: { opacity: 1, y: 0 },
+};
+
 export function Invitation() {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [-3, 3]);
+  const smooth = useSpring(scrollYProgress, { stiffness: 60, damping: 20 });
+
+  // Background motifs scroll at different speeds — deep parallax
+  const motifLeftY  = useTransform(smooth, [0, 1], ["-10%", "25%"]);
+  const motifRightY = useTransform(smooth, [0, 1], ["15%", "-20%"]);
+  const motifLeftR  = useTransform(smooth, [0, 1], [-5, 15]);
+  const motifRightR = useTransform(smooth, [0, 1], [10, -10]);
+
+  // Invitation card itself floats up smoothly
+  const cardY = useTransform(smooth, [0, 0.7], [60, -20]);
 
   return (
-    <section id="invitation" ref={ref} className="relative overflow-hidden bg-gradient-festival py-20 md:py-32">
+    <section
+      id="invitation"
+      ref={ref}
+      className="relative overflow-hidden bg-gradient-festival py-20 md:py-32"
+    >
+      {/* ── Parallax background motifs ── */}
       <motion.div
-        style={{ y, rotate }}
-        className="absolute -right-20 top-10 opacity-10"
+        style={{ y: motifLeftY, rotate: motifLeftR }}
+        className="pointer-events-none absolute -left-32 top-0 opacity-10"
+        aria-hidden
       >
-        <img src={motif} alt="" className="h-96 w-96" />
+        <img src={motif} alt="" className="h-[500px] w-[500px]" />
       </motion.div>
       <motion.div
-        style={{ y, rotate: useTransform(scrollYProgress, [0, 1], [3, -3]) }}
-        className="absolute -left-20 bottom-10 opacity-10"
+        style={{ y: motifRightY, rotate: motifRightR }}
+        className="pointer-events-none absolute -right-32 bottom-0 opacity-10"
+        aria-hidden
       >
-        <img src={motif} alt="" className="h-96 w-96" />
+        <img src={motif} alt="" className="h-[420px] w-[420px]" />
+      </motion.div>
+
+      {/* Subtle glow orb behind the card */}
+      <motion.div
+        style={{ y: useTransform(smooth, [0, 1], ["-5%", "10%"]) }}
+        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px]"
+        aria-hidden
+      >
+        <div className="h-full w-full rounded-full bg-ivory/10 blur-3xl" />
       </motion.div>
 
       <div className="container relative mx-auto px-6">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1 }}
+          style={{ y: cardY }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 1, type: "spring", stiffness: 70 }}
           className="mx-auto max-w-2xl rounded-3xl bg-ivory p-8 shadow-glow gold-border md:p-14"
         >
-          <div className="text-center">
-            <img src={motif} alt="" className="mx-auto h-20 w-20 md:h-28 md:w-28" />
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            transition={{ staggerChildren: 0.12 }}
+            className="text-center"
+          >
+            <motion.img
+              variants={fadeUp}
+              transition={{ duration: 0.7 }}
+              src={motif}
+              alt=""
+              className="mx-auto h-20 w-20 md:h-28 md:w-28"
+            />
 
-            <p className="mt-4 font-display text-[10px] tracking-[0.4em] text-rose-gold">
+            <motion.p
+              variants={fadeUp}
+              transition={{ duration: 0.6 }}
+              className="mt-4 font-display text-[10px] uppercase tracking-[0.4em] text-rose-gold"
+            >
               ✦ WITH THE BLESSINGS OF FAMILY ✦
-            </p>
+            </motion.p>
 
-            <div className="my-6 flex items-center justify-center gap-3">
+            <motion.div
+              variants={fadeUp}
+              transition={{ duration: 0.6 }}
+              className="my-6 flex items-center justify-center gap-3"
+            >
               <span className="h-px w-12 bg-gradient-gold" />
               <span className="text-rose-gold">❦</span>
               <span className="h-px w-12 bg-gradient-gold" />
-            </div>
+            </motion.div>
 
             {/* Tamil */}
-            <p className="font-serif text-lg leading-relaxed text-festival-deep md:text-xl">
+            <motion.p
+              variants={fadeUp}
+              transition={{ duration: 0.6 }}
+              className="font-serif text-lg leading-relaxed text-festival-deep md:text-xl"
+            >
               திருமண நல்வாழ்த்து
-            </p>
-            <p className="mt-2 font-serif italic text-foreground/70">
+            </motion.p>
+            <motion.p
+              variants={fadeUp}
+              transition={{ duration: 0.6 }}
+              className="mt-2 font-serif italic text-foreground/70"
+            >
               உங்கள் அன்பான வரவேற்கிறோம்
-            </p>
+            </motion.p>
 
-            <div className="my-6 flex items-center justify-center gap-3">
+            <motion.div
+              variants={fadeUp}
+              transition={{ duration: 0.5 }}
+              className="my-6 flex items-center justify-center gap-3"
+            >
               <span className="h-px w-12 bg-gradient-gold" />
               <span className="text-rose-gold">❦</span>
               <span className="h-px w-12 bg-gradient-gold" />
-            </div>
+            </motion.div>
 
             {/* English */}
-            <p className="font-serif text-lg italic text-foreground/80 md:text-xl">
+            <motion.p
+              variants={fadeUp}
+              transition={{ duration: 0.6 }}
+              className="font-serif text-lg italic text-foreground/80 md:text-xl"
+            >
               Together with their families,
               <br />we joyfully invite you to celebrate
               <br />the wedding of
-            </p>
+            </motion.p>
 
-            <h3 className="mt-6 font-script text-5xl text-gradient-royal md:text-6xl">
+            <motion.h3
+              variants={fadeUp}
+              transition={{ duration: 0.7 }}
+              className="mt-6 pb-2 font-heading text-5xl font-light tracking-tight text-gradient-royal md:text-6xl"
+            >
               Mohan Raj
-            </h3>
-            <div className="my-2 font-script text-3xl text-rose-gold">&</div>
-            <h3 className="font-script text-5xl text-gradient-royal md:text-6xl">
+            </motion.h3>
+            <motion.div
+              variants={fadeUp}
+              transition={{ duration: 0.5 }}
+              className="my-2 font-heading text-2xl text-rose-gold"
+            >
+              &
+            </motion.div>
+            <motion.h3
+              variants={fadeUp}
+              transition={{ duration: 0.7 }}
+              className="pb-2 font-heading text-5xl font-light tracking-tight text-gradient-royal md:text-6xl"
+            >
               Samyuktha
-            </h3>
+            </motion.h3>
 
-            <div className="mt-8 space-y-1 font-serif text-foreground/80">
-              <p className="font-display text-xs tracking-[0.3em] text-festival">
+            <motion.div
+              variants={fadeUp}
+              transition={{ duration: 0.6 }}
+              className="mt-8 space-y-1 font-serif text-foreground/80"
+            >
+              <p className="font-display text-xs uppercase tracking-[0.3em] text-festival">
                 WEDNESDAY · 27 MAY 2026
               </p>
               <p className="text-lg italic">6:00 PM onwards</p>
@@ -83,18 +167,26 @@ export function Invitation() {
                 <br />
                 <span className="italic text-foreground/60">Karur, Tamil Nadu</span>
               </p>
-            </div>
+            </motion.div>
 
-            <div className="mt-8 flex items-center justify-center gap-3">
+            <motion.div
+              variants={fadeUp}
+              transition={{ duration: 0.5 }}
+              className="mt-8 flex items-center justify-center gap-3"
+            >
               <span className="h-px w-12 bg-gradient-gold" />
               <span className="text-rose-gold">❦</span>
               <span className="h-px w-12 bg-gradient-gold" />
-            </div>
+            </motion.div>
 
-            <p className="mt-6 font-script text-2xl text-rose-gold">
+            <motion.p
+              variants={fadeUp}
+              transition={{ duration: 0.7 }}
+              className="mt-6 pb-2 font-script text-2xl text-rose-gold"
+            >
               Your presence is our blessing
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         </motion.div>
       </div>
     </section>

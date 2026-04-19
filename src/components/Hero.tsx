@@ -49,7 +49,7 @@ export function Hero() {
         </motion.p>
 
         <motion.h1
-          className="font-script text-6xl leading-none text-gradient-royal md:text-8xl lg:text-9xl"
+          className="pb-2 font-heading text-6xl font-light tracking-tight text-gradient-royal md:text-8xl lg:text-9xl"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 1 }}
@@ -75,7 +75,7 @@ export function Hero() {
         </motion.div>
 
         <motion.h1
-          className="font-script text-6xl leading-none text-gradient-royal md:text-8xl lg:text-9xl"
+          className="pb-2 font-heading text-6xl font-light tracking-tight text-gradient-royal md:text-8xl lg:text-9xl"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 1 }}
