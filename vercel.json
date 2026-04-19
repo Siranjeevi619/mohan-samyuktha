@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "framework": null,
+  "outputDirectory": ".output",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/_vercel/insights/.*",
+      "dest": "/_vercel/insights/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ]
+}
